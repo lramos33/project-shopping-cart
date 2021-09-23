@@ -40,17 +40,33 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// [HELP]
+function getPrices() {
+  const totalPriceSection = document.querySelector('.total-price');
+  const allPrices = document.querySelectorAll('.price');
+  const prices = [];
+  allPrices.forEach((element) => prices.push(parseFloat(element.innerHTML)));
+  if (prices.length > 0) {
+    const finalPrice = prices.reduce((acc, curr) => acc + curr);
+    totalPriceSection.innerText = `${finalPrice}`;
+  } else {
+    totalPriceSection.innerText = '0';
+  }
+}
+
 // Remove o elemento clicado e chama a função para atualizar o localStorage.
 function cartItemClickListener(event) {
   event.target.remove();
+  // event.target.parentNode.removeChild(event.target);
   saveCart();
+  getPrices();
 }
 
 // [TRYBE]
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span class="price">${salePrice}</span>`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -77,12 +93,14 @@ async function addItemsToCart(id) {
 
   await item
     .then((response) => response.json())
-    .then((element) => cartItems.appendChild(createCartItemElement({
-      sku: element.id,
-      name: element.title,
-      salePrice: element.price,
-    })));
-
+    .then((element) => {
+      cartItems.appendChild(createCartItemElement({
+        sku: element.id,
+        name: element.title,
+        salePrice: element.price,
+      }));
+    });
+  getPrices();
   saveCart();
 }
 
@@ -104,17 +122,19 @@ function bringCartBack() {
 // Remove todos os elementos dentro do carrinho e depois salva no localStorage.
 function emptyCart() {
   const emptyButton = document.querySelector('.empty-cart');
-  
   emptyButton.addEventListener('click', () => {
     const cartItem = document.querySelectorAll('.cart__item');
     cartItem.forEach((element) => element.remove());
+    getPrices();
     saveCart();
   });
 }
 
 window.onload = async () => { 
   await fetchItems();
-  getProductId();
   bringCartBack();
+  getPrices();
+
+  getProductId();
   emptyCart();
 };
