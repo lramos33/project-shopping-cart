@@ -1,3 +1,12 @@
+const cartItems = document.querySelector('.cart__items');
+
+// Salva todos os itens no localStorage.
+function saveCart() {
+  localStorage.setItem('cartContent', cartItems.innerHTML);
+}
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,12 +33,13 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 function cartItemClickListener(event) {
-  event.target.parentNode.removeChild(event.target);
+  event.target.remove();
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -42,7 +52,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-// Faz a requisição de todos os itens
+// Faz a requisição de todos os itens e chama a função (line: ) para adicionar todos eles na página via html.
 async function fetchItems() {
   const computers = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const sectionItems = document.querySelector('.items');
@@ -58,21 +68,22 @@ async function fetchItems() {
       }))));
 }
 
-// Função pra adicionar os items ao carrinho
+// Faz a requisição do item e depois chama a função para adicionar ao carrinho via html. Por fim executa a função (line: ) que salva no localStorage.
 async function addItemsToCart(id) {
   const item = fetch(`https://api.mercadolibre.com/items/${id}`);
-  const olCartItems = document.querySelector('.cart__items');
 
   await item
     .then((response) => response.json())
-    .then((element) => olCartItems.appendChild(createCartItemElement({
+    .then((element) => cartItems.appendChild(createCartItemElement({
       sku: element.id,
       name: element.title,
       salePrice: element.price,
     })));
+
+  saveCart();
 }
 
-// Função que captura o id do item clicado
+// Captura o id do item clicado e usa esse id para chamar a função (line: ) que adiciona o item ao carrinho.
 function getProductId() {
     const allAddCartButtons = document.querySelectorAll('.item__add');
     allAddCartButtons.forEach((button) => button.addEventListener('click', (event) => {
@@ -81,7 +92,14 @@ function getProductId() {
     }));
 }
 
+// Remonta o carrinho com os dados que tem no localStorage.
+function bringCartBack() {
+  cartItems.innerHTML = localStorage.getItem('cartContent');
+  cartItems.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
+}
+
 window.onload = async () => { 
   await fetchItems();
   getProductId();
+  bringCartBack();
 };
