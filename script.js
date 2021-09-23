@@ -28,22 +28,22 @@ function createProductItemElement({ sku, name, image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-async function fetchItems(url) {
-  const computers = fetch(url);
+async function fetchItems() {
+  const computers = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const sectionItems = document.querySelector('.items');
 
   await computers
@@ -56,8 +56,29 @@ async function fetchItems(url) {
         image: element.thumbnail,
       }))));
 }
-fetchItems('https://api.mercadolibre.com/sites/MLB/search?q=computador');
 
-// window.onload = () => {};
+async function addItemsToCart(id) {
+  const item = fetch(`https://api.mercadolibre.com/items/${id}`);
+  const olCartItems = document.querySelector('.cart__items');
 
-// sectionItems.appendChild(createProductItemElement({sku: element.id, name: element.title, image: element.thumbnail,}))
+  await item
+    .then((response) => response.json())
+    .then((element) => olCartItems.appendChild(createCartItemElement({
+      sku: element.id,
+      name: element.title,
+      salePrice: element.price,
+    })));
+}
+
+function getProductId() {
+    const allAddCartButtons = document.querySelectorAll('.item__add');
+    allAddCartButtons.forEach((button) => button.addEventListener('click', (event) => {
+      const itemId = event.target.parentNode.firstChild.innerText;
+      addItemsToCart(itemId);
+    }));
+}
+
+window.onload = async () => { 
+  await fetchItems();
+  getProductId();
+};
