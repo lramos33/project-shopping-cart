@@ -1,3 +1,4 @@
+// Constantes globais
 const cartItems = document.querySelector('.cart__items');
 
 // Salva todos os itens no localStorage.
@@ -5,8 +6,7 @@ function saveCart() {
   localStorage.setItem('cartContent', cartItems.innerHTML);
 }
 
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
+// [TRYBE]
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,6 +14,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// [TRYBE]
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -21,6 +22,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// [TRYBE]
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -33,15 +35,18 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// [TRYBE]
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Remove o elemento clicado e chama a função para atualizar o localStorage.
 function cartItemClickListener(event) {
   event.target.remove();
   saveCart();
 }
 
+// [TRYBE]
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -49,8 +54,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 // Faz a requisição de todos os itens e chama a função (line: ) para adicionar todos eles na página via html.
 async function fetchItems() {
