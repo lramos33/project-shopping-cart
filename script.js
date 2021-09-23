@@ -95,14 +95,26 @@ function getProductId() {
     }));
 }
 
-// Remonta o carrinho com os dados que tem no localStorage.
+// Remonta o carrinho com os dados do localStorage.
 function bringCartBack() {
   cartItems.innerHTML = localStorage.getItem('cartContent');
   cartItems.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
+}
+
+// Remove todos os elementos dentro do carrinho e depois salva no localStorage.
+function emptyCart() {
+  const emptyButton = document.querySelector('.empty-cart');
+  
+  emptyButton.addEventListener('click', () => {
+    const cartItem = document.querySelectorAll('.cart__item');
+    cartItem.forEach((element) => element.remove());
+    saveCart();
+  });
 }
 
 window.onload = async () => { 
   await fetchItems();
   getProductId();
   bringCartBack();
+  emptyCart();
 };
