@@ -83,7 +83,7 @@ function removeLoading() {
   loadingMessage.remove();
 }
 
-// Faz a requisição de todos os itens e chama a função (line: ) para adicionar todos eles na página via html.
+// Faz a requisição de todos os itens e chama a função para adicionar todos eles na página via html.
 async function fetchItems() {
   const computers = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   await computers
@@ -98,7 +98,7 @@ async function fetchItems() {
   removeLoading();
 }
 
-// Faz a requisição do item e depois chama a função para adicionar ao carrinho via html. Por fim executa a função (line: ) que salva no localStorage.
+// Faz a requisição do item e depois chama a função para adicionar ao carrinho via html. Por fim executa a função que salva no localStorage.
 async function addItemsToCart(id) {
   const item = fetch(`https://api.mercadolibre.com/items/${id}`);
   await item
@@ -114,7 +114,7 @@ async function addItemsToCart(id) {
   saveCart();
 }
 
-// Captura o id do item clicado e usa esse id para chamar a função (line: ) que adiciona o item ao carrinho.
+// Captura o id do item clicado e usa esse id para chamar a função que adiciona o item ao carrinho.
 function getProductId() {
     const allAddCartButtons = document.querySelectorAll('.item__add');
     allAddCartButtons.forEach((button) => button.addEventListener('click', (event) => {
@@ -129,7 +129,7 @@ function bringCartBack() {
   cartItems.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
 }
 
-// Remove todos os elementos dentro do carrinho e depois salva no localStorage.
+// Ao clicar no botão 'esvaziar carrinho' remove todos os elementos dentro do carrinho e depois salva no localStorage.
 function emptyCart() {
   const emptyButton = document.querySelector('.empty-cart');
   emptyButton.addEventListener('click', () => {
