@@ -1,5 +1,6 @@
-// Constantes globais
+// Constantes usadas em mais de uma função.
 const cartItems = document.querySelector('.cart__items');
+const sectionItems = document.querySelector('.items');
 
 // Salva todos os itens no localStorage.
 function saveCart() {
@@ -26,12 +27,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
- 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -40,7 +39,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// [HELP]
+// Captura todos os preços, retorna a soma total e insere o resultado na página.
 function getPrices() {
   const totalPriceSection = document.querySelector('.total-price');
   const allPrices = document.querySelectorAll('.price');
@@ -57,7 +56,6 @@ function getPrices() {
 // Remove o elemento clicado e chama a função para atualizar o localStorage.
 function cartItemClickListener(event) {
   event.target.remove();
-  // event.target.parentNode.removeChild(event.target);
   saveCart();
   getPrices();
 }
@@ -71,14 +69,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Cria o texto 'loading...' na página.
 function loadingPage() {
-  const itemsSection = document.querySelector('.items');
   const loadingParagraph = document.createElement('p');
   loadingParagraph.className = 'loading';
   loadingParagraph.innerText = 'loading...';
-  itemsSection.appendChild(loadingParagraph);
+  sectionItems.appendChild(loadingParagraph);
 }
 
+// Remove o texto 'loading...' da página.
 function removeLoading() {
   const loadingMessage = document.querySelector('.loading');
   loadingMessage.remove();
@@ -87,8 +86,6 @@ function removeLoading() {
 // Faz a requisição de todos os itens e chama a função (line: ) para adicionar todos eles na página via html.
 async function fetchItems() {
   const computers = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  const sectionItems = document.querySelector('.items');
-
   await computers
     .then((response) => response.json())
     .then((response) => response.results)
@@ -104,7 +101,6 @@ async function fetchItems() {
 // Faz a requisição do item e depois chama a função para adicionar ao carrinho via html. Por fim executa a função (line: ) que salva no localStorage.
 async function addItemsToCart(id) {
   const item = fetch(`https://api.mercadolibre.com/items/${id}`);
-
   await item
     .then((response) => response.json())
     .then((element) => {
@@ -149,7 +145,6 @@ window.onload = async () => {
   await fetchItems();
   bringCartBack();
   getPrices();
-
   getProductId();
   emptyCart();
 };
