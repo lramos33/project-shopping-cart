@@ -71,6 +71,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function loadingPage() {
+  const itemsSection = document.querySelector('.items');
+  const loadingParagraph = document.createElement('p');
+  loadingParagraph.className = 'loading';
+  loadingParagraph.innerText = 'loading...';
+  itemsSection.appendChild(loadingParagraph);
+}
+
+function removeLoading() {
+  const loadingMessage = document.querySelector('.loading');
+  loadingMessage.remove();
+}
+
 // Faz a requisição de todos os itens e chama a função (line: ) para adicionar todos eles na página via html.
 async function fetchItems() {
   const computers = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
@@ -85,6 +98,7 @@ async function fetchItems() {
         name: element.title, 
         image: element.thumbnail,
       }))));
+  removeLoading();
 }
 
 // Faz a requisição do item e depois chama a função para adicionar ao carrinho via html. Por fim executa a função (line: ) que salva no localStorage.
@@ -130,7 +144,8 @@ function emptyCart() {
   });
 }
 
-window.onload = async () => { 
+window.onload = async () => {
+  loadingPage();
   await fetchItems();
   bringCartBack();
   getPrices();
