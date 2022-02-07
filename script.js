@@ -47,9 +47,9 @@ function getPrices() {
   allPrices.forEach((element) => prices.push(parseFloat(element.innerHTML)));
   if (prices.length > 0) {
     const finalPrice = prices.reduce((acc, curr) => acc + curr);
-    totalPriceSection.innerText = `${finalPrice}`;
+    totalPriceSection.innerText = `Total price: $ ${finalPrice}`;
   } else {
-    totalPriceSection.innerText = '0';
+    totalPriceSection.innerText = `Total price: $ 0`;
   }
 }
 
